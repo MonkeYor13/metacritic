@@ -1,7 +1,16 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, ScrollView, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  View,
+  //ScrollView,
+  StatusBar,
+  FlatList,
+} from "react-native";
 import { getLatestGames } from "./lib/metacritic";
+import GameCard from "./components/GameCard";
+import { Logo } from "./components/Logo";
 
+//NO HAY QUE UTILIZAR EL SCROLLVIEW DEBERIA USAR EL FLATLITS
 
 export default function App() {
   const [games, setGames] = useState([]);
@@ -14,17 +23,19 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" backgroundColor='green' />
-      <ScrollView>
+      <StatusBar style="light" backgroundColor="green" />
+      <Logo />
+      {/* <ScrollView>
         {games.map((game) => (
-          <View key={game.slug} style={styles.card}>
-            <Image source={{ uri: game.image }} style={styles.image} />
-            <Text style={styles.title}>{game.title}</Text>
-            <Text style={styles.description}>{game.description}</Text>
-            <Text style={styles.score}>{game.score}</Text>
-          </View>
+          <GameCard key={game.slug} game={game} />
         ))}
-      </ScrollView>
+      </ScrollView> */}
+
+      <FlatList
+        data={games}
+        keyExtractor={(game) => game.slug} //le decimos que del juego quiero que extraigas como key el slug, ya que no tenemos id
+        renderItem={({ item }) => <GameCard game={item} />}
+      />
     </View>
   );
 }
@@ -36,29 +47,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingTop: StatusBar.currentHeight,
-  },
-  card: {
-    marginBottom: 42,
-  },
-  image: {
-    width: 107,
-    height: 147,
-    borderRadius: 10,
-  },
-  title: {
-    fontSize: 20,
-    color: "white",
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  description: {
-    fontSize: 16,
-    color: "#eee",
-  },
-  score: {
-    fontSize: 20,
-    color: "green",
-    fontWeight: "bold",
-    marginTop: 10,
   },
 });
